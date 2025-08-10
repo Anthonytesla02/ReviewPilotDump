@@ -28,7 +28,10 @@ Preferred communication style: Simple, everyday language.
 - **Export Capabilities**: Excel export functionality using openpyxl engine
 
 ### Configuration Management
+- **Dual Database Support**: Supports both external ReviewPilot database and local Replit database with user selection interface
 - **Environment Variables**: Flexible configuration system supporting both `DATABASE_URL` and individual PostgreSQL parameters
+- **Database Switching**: Radio button interface allows users to choose between ReviewPilot (External) and Replit (Local) databases
+- **Connection Source Tracking**: Displays connection details and source type for transparency
 - **Fallback Mechanism**: Graceful fallback to default values when environment variables are not set
 - **Page Configuration**: Streamlit page settings with custom title, icon, and layout preferences
 

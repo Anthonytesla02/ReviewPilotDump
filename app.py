@@ -16,24 +16,52 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Initialize database manager
+# Initialize database managers
 @st.cache_resource
-def init_database():
-    return DatabaseManager()
+def init_database_custom():
+    return DatabaseManager(use_custom=True)
+
+@st.cache_resource  
+def init_database_replit():
+    return DatabaseManager(use_custom=False)
 
 def main():
     st.title("🗄️ PostgreSQL Database Dumper")
     st.markdown("---")
     
-    # Initialize database connection
-    db_manager = init_database()
+    # Database selection
+    st.subheader("Database Connection")
+    
+    db_choice = st.radio(
+        "Choose database to connect to:",
+        ["ReviewPilot Database (External)", "Replit Database (Local)"],
+        index=0
+    )
+    
+    # Initialize database connection based on choice
+    if db_choice == "Replit Database (Local)":
+        db_manager = init_database_replit()
+    else:
+        db_manager = init_database_custom()
     
     # Check connection status
+    connection_params = db_manager.connection_params
+    source = connection_params.get('source', 'unknown')
+    
     if not db_manager.test_connection():
-        st.error("❌ Failed to connect to database. Please check your connection settings.")
+        st.error(f"❌ Failed to connect to {db_choice}. Please check your connection settings.")
         st.stop()
     
-    st.success("✅ Connected to database successfully!")
+    st.success(f"✅ Connected to {db_choice} successfully!")
+    
+    # Display connection info
+    with st.expander("Connection Details", expanded=False):
+        st.write(f"**Database:** {connection_params['database']}")
+        st.write(f"**Host:** {connection_params['host']}")
+        st.write(f"**Port:** {connection_params['port']}")
+        st.write(f"**Source:** {source}")
+    
+    st.markdown("---")
     
     # Sidebar for navigation
     st.sidebar.title("Navigation")

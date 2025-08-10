@@ -7,38 +7,54 @@ from urllib.parse import urlparse
 import logging
 
 class DatabaseManager:
-    def __init__(self):
+    def __init__(self, use_custom=True):
         """Initialize database connection using environment variables"""
+        self.use_custom = use_custom
         self.connection_params = self._get_connection_params()
         self.engine = None
         self.connection = None
         self._initialize_connection()
     
     def _get_connection_params(self):
-        """Get database connection parameters from environment variables"""
+        """Get database connection parameters from environment variables or custom URL"""
         
-        # Use the provided ReviewPilot database URL
-        database_url = "postgresql://reviewpilot_user:kLQiZvLx6Hk5sOw92HO5tt7Xa9oeUEL6@dpg-d27nseogjchc738fvaf0-a.oregon-postgres.render.com/reviewpilot"
-        
-        if database_url:
-            # Parse the database URL
+        if self.use_custom:
+            # Use the provided ReviewPilot database URL
+            database_url = "postgresql://reviewpilot_user:kLQiZvLx6Hk5sOw92HO5tt7Xa9oeUEL6@dpg-d27nseogjchc738fvaf0-a.oregon-postgres.render.com/reviewpilot"
             parsed = urlparse(database_url)
             return {
                 'host': parsed.hostname,
                 'port': parsed.port or 5432,
                 'database': parsed.path[1:] if parsed.path else '',
                 'username': parsed.username,
-                'password': parsed.password
+                'password': parsed.password,
+                'source': 'ReviewPilot (External)'
             }
         else:
-            # Fallback to individual environment variables
-            return {
-                'host': os.getenv('PGHOST', 'localhost'),
-                'port': int(os.getenv('PGPORT', 5432)),
-                'database': os.getenv('PGDATABASE', 'postgres'),
-                'username': os.getenv('PGUSER', 'postgres'),
-                'password': os.getenv('PGPASSWORD', '')
-            }
+            # Use Replit's DATABASE_URL environment variable
+            replit_database_url = os.getenv('DATABASE_URL')
+            
+            if replit_database_url:
+                # Parse the database URL
+                parsed = urlparse(replit_database_url)
+                return {
+                    'host': parsed.hostname,
+                    'port': parsed.port or 5432,
+                    'database': parsed.path[1:] if parsed.path else '',
+                    'username': parsed.username,
+                    'password': parsed.password,
+                    'source': 'Replit (Local)'
+                }
+            else:
+                # Fallback to individual environment variables
+                return {
+                    'host': os.getenv('PGHOST', 'localhost'),
+                    'port': int(os.getenv('PGPORT', 5432)),
+                    'database': os.getenv('PGDATABASE', 'postgres'),
+                    'username': os.getenv('PGUSER', 'postgres'),
+                    'password': os.getenv('PGPASSWORD', ''),
+                    'source': 'Environment Variables'
+                }
     
     def _initialize_connection(self):
         """Initialize SQLAlchemy engine and connection"""
