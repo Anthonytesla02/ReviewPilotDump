@@ -4,6 +4,8 @@
 
 This is a Streamlit-based web application that provides a user-friendly interface for connecting to and exploring PostgreSQL databases. The application allows users to view database tables, analyze data statistics, and export data in various formats. It's designed as a database administration and data exploration tool with visualization capabilities using Plotly for charts and graphs.
 
+The application is now prepared for deployment on Vercel and other cloud platforms with complete configuration files and deployment documentation.
+
 ## User Preferences
 
 Preferred communication style: Simple, everyday language.
