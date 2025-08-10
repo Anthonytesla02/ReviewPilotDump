@@ -13,6 +13,8 @@ A Streamlit-based web application that provides a user-friendly interface for co
 
 ## Deployment on Vercel
 
+**Note**: The app uses Flask for Vercel deployment instead of Streamlit due to serverless compatibility requirements.
+
 ### Prerequisites
 
 1. A Vercel account
@@ -25,17 +27,12 @@ A Streamlit-based web application that provides a user-friendly interface for co
 2. **Connect to Vercel**
    - Go to [vercel.com](https://vercel.com)
    - Import your repository
-   - Vercel will automatically detect the configuration
+   - Vercel will automatically detect the Flask configuration
 
-3. **Set Environment Variables** (if using Replit database)
+3. **Set Environment Variables** (optional - for custom databases)
    In your Vercel dashboard, add these environment variables:
    ```
    DATABASE_URL=your_postgresql_connection_string
-   PGHOST=your_host
-   PGPORT=5432
-   PGDATABASE=your_database_name
-   PGUSER=your_username
-   PGPASSWORD=your_password
    ```
 
 4. **Deploy**
